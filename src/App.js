@@ -1,25 +1,152 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, useEffect } from "react";
+import Header from "./components/Header";
+import TodoForm from "./components/TodoForm";
+import TodoList from "./components/TodoList";
 
-function App() {
+const App = () => {
+  const initialState = JSON.parse(localStorage.getItem("todos")) || [];
+
+  const [input, setInput] = useState("");
+  const [todos, setTodos] = useState(initialState);
+  const [editTodo, setEditTodo] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="app-wrapper">
+        <div>
+          <Header />
+        </div>
+        <div>
+          <TodoForm
+            input={input}
+            setInput={setInput}
+            todos={todos}
+            setTodos={setTodos}
+            editTodo={editTodo}
+            setEditTodo={setEditTodo}
+          />
+        </div>
+        <div>
+          <TodoList
+            todos={todos}
+            setTodos={setTodos}
+            setEditTodo={setEditTodo}
+          />
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
+
+// import React from "react";
+// import "./App.css";
+
+// const App = () => {
+//   const [todos, setTodos] = React.useState([]);
+//   const [todo, setTodo] = React.useState("");
+//   const [todoEditing, setTodoEditing] = React.useState(null);
+//   const [editingText, setEditingText] = React.useState("");
+
+//   React.useEffect(() => {
+//     const json = localStorage.getItem("todos");
+//     const loadedTodos = JSON.parse(json);
+//     if (loadedTodos) {
+//       setTodos(loadedTodos);
+//     }
+//   }, []);
+
+//   React.useEffect(() => {
+//     const json = JSON.stringify(todos);
+//     localStorage.setItem("todos", json);
+//   }, [todos]);
+
+//   function handleSubmit(e) {
+//     e.preventDefault();
+
+//     const newTodo = {
+//       id: new Date().getTime(),
+//       text: todo,
+//       completed: false,
+//     };
+//     setTodos([...todos].concat(newTodo));
+//     setTodo("");
+//   }
+
+//   function deleteTodo(id) {
+//     let updatedTodos = [...todos].filter((todo) => todo.id !== id);
+//     setTodos(updatedTodos);
+//   }
+
+//   function toggleComplete(id) {
+//     let updatedTodos = [...todos].map((todo) => {
+//       if (todo.id === id) {
+//         todo.completed = !todo.completed;
+//       }
+//       return todo;
+//     });
+//     setTodos(updatedTodos);
+//   }
+
+//   function submitEdits(id) {
+//     const updatedTodos = [...todos].map((todo) => {
+//       if (todo.id === id) {
+//         todo.text = editingText;
+//       }
+//       return todo;
+//     });
+//     setTodos(updatedTodos);
+//     setTodoEditing(null);
+//   }
+
+//   return (
+//     <div id="todo-list">
+//       <h1>Todo List</h1>
+//       <form onSubmit={handleSubmit}>
+//         <input
+//           type="text"
+//           onChange={(e) => setTodo(e.target.value)}
+//           value={todo}
+//         />
+//         <button type="submit">Add Todo</button>
+//       </form>
+//       {todos.map((todo) => (
+//         <div key={todo.id} className="todo">
+//           <div className="todo-text">
+//             <input
+//               type="checkbox"
+//               id="completed"
+//               checked={todo.completed}
+//               onChange={() => toggleComplete(todo.id)}
+//             />
+//             {todo.id === todoEditing ? (
+//               <input
+//                 type="text"
+//                 onChange={(e) => setEditingText(e.target.value)}
+//               />
+//             ) : (
+//               <div>{todo.text}</div>
+//             )}
+//           </div>
+//           <div className="todo-actions">
+//             {todo.id === todoEditing ? (
+//               <button onClick={() => submitEdits(todo.id)}>Submit Edits</button>
+//             ) : (
+//               <button onClick={() => setTodoEditing(todo.id)}>Edit</button>
+//             )}
+
+//             <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default App;
